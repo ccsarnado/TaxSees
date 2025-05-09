@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TaxSees Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="navbar">
+    <h1 class="logo">TaxSees</h1>
+    <nav>
+      <button class="tab-btn" onclick="showTab('dashboard')">Dashboard</button>
+      <button class="tab-btn" onclick="showTab('scan')">Scan QR</button>
+      <button class="tab-btn" onclick="showTab('projects')">Projects</button>
+    </nav>
+  </header>
+
+  <main class="main-container">
+    <!-- Dashboard Section -->
+    <section id="dashboard" class="tab-section">
+      <div class="map-panel glass">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/4/49/PH_locator_map.svg" alt="Map of the Philippines" />
+      </div>
+      <aside class="budget-panel glass">
+        <h2>2025 Budget</h2>
+        <p><strong>Total:</strong> ₱6.33T</p>
+        <ul>
+          <li>Education: ₱925B</li>
+          <li>Health: ₱297.6B</li>
+          <li>Social Welfare: ₱262B</li>
+          <li>Infrastructure: ₱1.4T</li>
+        </ul>
+      </aside>
+    </section>
+
+    <!-- QR Scan Section -->
+    <section id="scan" class="tab-section hidden">
+      <div class="glass">
+        <h2>Scan a QR Code</h2>
+        <p>Simulate scan:</p>
+        <button class="action-btn" onclick="loadProject()">Load Sample</button>
+        <div id="project-details" class="project-card glass"></div>
+      </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="tab-section hidden">
+      <div class="glass">
+        <h2>Projects by Fund</h2>
+        <div class="project-list">
+          <div class="project-card glass">
+            <h3>Farm-to-Market Road</h3>
+            <p>₱10M – 75% complete</p>
+            <progress value="75" max="100"></progress>
+          </div>
+          <div class="project-card glass">
+            <h3>Barangay Health Center</h3>
+            <p>₱5M – 100% complete</p>
+            <progress value="100" max="100"></progress>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    function showTab(id) {
+      document.querySelectorAll('.tab-section').forEach(tab => tab.classList.add('hidden'));
+      document.getElementById(id).classList.remove('hidden');
+    }
+
+    function loadProject() {
+      document.getElementById('project-details').innerHTML = `
+        <h3>Farm-to-Market Road – Davao</h3>
+        <p><strong>Contractor:</strong> XYZ Builders</p>
+        <p><strong>Budget:</strong> ₱10M (National)</p>
+        <p><strong>Status:</strong> 75% complete</p>
+        <progress value="75" max="100"></progress>
+        <p><strong>Issues:</strong> None flagged</p>
+      `;
+    }
+  </script>
+</body>
+</html>
