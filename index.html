@@ -20,13 +20,14 @@
   <main class="main-container">
     <!-- Dashboard Section -->
     <section id="dashboard" class="tab-section">
-      <div class="map-panel">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/4/49/PH_locator_map.svg" alt="Map of the Philippines" class="philippine-map"/>
+      <div class="map-panel glass">
+        <!-- Embed SVG map here -->
+        <object type="image/svg+xml" data="https://upload.wikimedia.org/wikipedia/commons/d/d7/Philippines_location_map.svg" id="ph-map"></object>
       </div>
-      <aside class="budget-panel">
-        <h2>2025 National Budget</h2>
+      <aside class="budget-panel glass">
+        <h2>2025 Budget</h2>
         <p><strong>Total:</strong> ₱6.33T</p>
-        <ul class="budget-breakdown">
+        <ul>
           <li>Education: ₱925B</li>
           <li>Health: ₱297.6B</li>
           <li>Social Welfare: ₱262B</li>
@@ -39,7 +40,8 @@
     <section id="scan" class="tab-section hidden">
       <div class="glass">
         <h2>Scan a QR Code</h2>
-        <button class="action-btn scan-btn" onclick="simulateQRScan()">Simulate Scan</button>
+        <p>Simulate scan:</p>
+        <button class="action-btn" onclick="loadProject()">Load Sample</button>
         <div id="project-details" class="project-card glass"></div>
       </div>
     </section>
