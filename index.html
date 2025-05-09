@@ -20,13 +20,13 @@
   <main class="main-container">
     <!-- Dashboard Section -->
     <section id="dashboard" class="tab-section">
-      <div class="map-panel glass">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/4/49/PH_locator_map.svg" alt="Map of the Philippines" />
+      <div class="map-panel">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/4/49/PH_locator_map.svg" alt="Map of the Philippines" class="philippine-map"/>
       </div>
-      <aside class="budget-panel glass">
-        <h2>2025 Budget</h2>
+      <aside class="budget-panel">
+        <h2>2025 National Budget</h2>
         <p><strong>Total:</strong> ₱6.33T</p>
-        <ul>
+        <ul class="budget-breakdown">
           <li>Education: ₱925B</li>
           <li>Health: ₱297.6B</li>
           <li>Social Welfare: ₱262B</li>
@@ -39,8 +39,7 @@
     <section id="scan" class="tab-section hidden">
       <div class="glass">
         <h2>Scan a QR Code</h2>
-        <p>Simulate scan:</p>
-        <button class="action-btn" onclick="loadProject()">Load Sample</button>
+        <button class="action-btn scan-btn" onclick="simulateQRScan()">Simulate Scan</button>
         <div id="project-details" class="project-card glass"></div>
       </div>
     </section>
@@ -65,22 +64,6 @@
     </section>
   </main>
 
-  <script>
-    function showTab(id) {
-      document.querySelectorAll('.tab-section').forEach(tab => tab.classList.add('hidden'));
-      document.getElementById(id).classList.remove('hidden');
-    }
-
-    function loadProject() {
-      document.getElementById('project-details').innerHTML = `
-        <h3>Farm-to-Market Road – Davao</h3>
-        <p><strong>Contractor:</strong> XYZ Builders</p>
-        <p><strong>Budget:</strong> ₱10M (National)</p>
-        <p><strong>Status:</strong> 75% complete</p>
-        <progress value="75" max="100"></progress>
-        <p><strong>Issues:</strong> None flagged</p>
-      `;
-    }
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
