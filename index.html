@@ -21,8 +21,8 @@
     <!-- Dashboard Section -->
     <section id="dashboard" class="tab-section">
       <div class="map-panel glass">
-        <!-- Embed SVG map here -->
-        <object type="image/svg+xml" data="https://upload.wikimedia.org/wikipedia/commons/d/d7/Philippines_location_map.svg" id="ph-map"></object>
+        <!-- Embed the SVG map from the repository -->
+        <object data="Philippines_location_map.svg" type="image/svg+xml" class="map-svg"></object>
       </div>
       <aside class="budget-panel glass">
         <h2>2025 Budget</h2>
@@ -66,6 +66,22 @@
     </section>
   </main>
 
-  <script src="script.js"></script>
+  <script>
+    function showTab(id) {
+      document.querySelectorAll('.tab-section').forEach(tab => tab.classList.add('hidden'));
+      document.getElementById(id).classList.remove('hidden');
+    }
+
+    function loadProject() {
+      document.getElementById('project-details').innerHTML = `
+        <h3>Farm-to-Market Road – Davao</h3>
+        <p><strong>Contractor:</strong> XYZ Builders</p>
+        <p><strong>Budget:</strong> ₱10M (National)</p>
+        <p><strong>Status:</strong> 75% complete</p>
+        <progress value="75" max="100"></progress>
+        <p><strong>Issues:</strong> None flagged</p>
+      `;
+    }
+  </script>
 </body>
 </html>
