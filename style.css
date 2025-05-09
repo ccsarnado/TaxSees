@@ -1,47 +1,190 @@
+/* Global Styles */
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Inter', sans-serif;
+  background: #0f0f0f;
+  color: white;
   margin: 0;
-  background: #f8f6fc;
-  color: #333;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
 }
 
-header {
-  background: #6a1b9a;
-  color: white;
-  padding: 1rem;
-  text-align: center;
+.navbar {
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.6);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
 }
 
-nav button {
-  margin: 0.5rem;
-  padding: 0.5rem 1rem;
-  border: none;
-  background: #8e24aa;
+.navbar .logo {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #9400d3; /* Neon violet */
+  text-shadow: 0 0 10px #9400d3, 0 0 20px #9400d3;
+}
+
+.tab-btn {
+  background: none;
+  border: 2px solid transparent;
   color: white;
-  border-radius: 4px;
+  padding: 10px;
   cursor: pointer;
+  margin: 0 10px;
+  font-size: 1.2rem;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
 }
 
-main {
+.tab-btn:hover {
+  background: #9400d3;
+  border: 2px solid #9400d3;
+  border-radius: 10px;
+  box-shadow: 0 0 20px 5px #9400d3;
+}
+
+.tab-btn:focus {
+  outline: none;
+}
+
+/* Glassmorphism Style for Panels */
+.glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 20px;
+  margin: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Main Container */
+.main-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 2rem;
+  margin-top: 80px;
 }
 
-.map-container {
-  max-width: 500px;
+/* Section Visibility */
+.tab-section {
+  display: none;
+  width: 80%;
+  text-align: center;
+  margin-top: 30px;
 }
 
-.budget-panel {
-  background: #eee6f3;
-  padding: 1rem;
-  margin-top: 1rem;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+.tab-section.hidden {
+  display: none;
 }
 
-.tab {
+.tab-section:not(.hidden) {
+  display: block;
+}
+
+/* Dashboard Layout */
+#dashboard {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  text-align: left;
+}
+
+.map-panel {
+  width: 50%;
+  background-color: #000000;
+  border-radius: 15px;
+}
+
+.philippine-map {
   width: 100%;
-  max-width: 600px;
+  height: auto;
+  border-radius: 15px;
+}
+
+/* Budget Panel */
+.budget-panel {
+  width: 40%;
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0.6);
+  border-radius: 15px;
+  margin-top: 20px;
+  box-shadow: 0 0 15px #9400d3;
+}
+
+.budget-breakdown li {
+  font-size: 1.3rem;
+  padding: 5px 0;
+  text-shadow: 0 0 5px #fff, 0 0 10px #fff;
+}
+
+.budget-breakdown {
+  list-style-type: none;
+  padding: 0;
+}
+
+/* Progress Bars */
+progress {
+  width: 100%;
+  height: 25px;
+  border-radius: 15px;
+  margin-top: 10px;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+progress[value] {
+  background-color: #444444;
+}
+
+button.action-btn {
+  background-color: #9400d3;
+  padding: 15px 25px;
+  border: none;
+  cursor: pointer;
+  margin-top: 20px;
+  border-radius: 10px;
+  font-size: 1.2rem;
+  transition: all 0.3s ease;
+}
+
+button.action-btn:hover {
+  background-color: #7200a1;
+  box-shadow: 0 0 15px 5px #7200a1;
+}
+
+/* Project Card */
+.project-card {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  margin: 10px;
+  border-radius: 15px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+}
+
+.project-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+/* Animation for Hover Effects */
+@keyframes neonGlow {
+  0% {
+    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px #ff0080, 0 0 30px #ff0080, 0 0 40px #ff0080, 0 0 50px #ff0080, 0 0 75px #ff0080;
+  }
+  50% {
+    text-shadow: 0 0 5px #ff0080, 0 0 10px #ff0080, 0 0 20px #ff0080, 0 0 30px #ff0080, 0 0 40px #ff0080, 0 0 50px #ff0080, 0 0 75px #ff0080;
+  }
+  100% {
+    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px #ff0080, 0 0 30px #ff0080, 0 0 40px #ff0080, 0 0 50px #ff0080, 0 0 75px #ff0080;
+  }
+}
+
+button:hover {
+  animation: neonGlow 1.5s ease-in-out infinite;
 }
