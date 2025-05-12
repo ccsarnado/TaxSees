@@ -1,87 +1,356 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <base target="_top">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>TaxSees Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background-color: #ffffff;
+      color: #212529;
+    }
+    .container { width: 100%; height: 100vh; display: flex; flex-direction: column; }
+
+    header {
+      background-color: #003366;
+      color: #ffffff;
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo { font-size: 2rem; font-weight: bold; color: #fff; text-transform: uppercase; }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 1rem;
+    }
+    nav ul li a {
+      color: #ffffff;
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+    }
+    nav ul li a.active {
+      background: rgba(255, 255, 255, 0.1);
+      border-bottom: 2px solid #FF0000;
+    }
+    nav ul li a:hover {
+      background-color: #0056b3;
+      border-radius: 5px;
+    }
+
+    .tab-section {
+      display: none;
+      position: relative;
+      min-height: 100vh;
+      overflow-y: auto;
+      padding-bottom: 2rem;
+    }
+    .tab-section.active { display: block; }
+
+    .background-filter {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: url('https://images.unsplash.com/photo-1496116013258-67a0855f9f82?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NDY3ODU2MDd8&ixlib=rb-4.1.0&q=85') no-repeat center center;
+      background-size: cover;
+      filter: brightness(0.6);
+    }
+
+    #project-list {
+      min-height: 200px;
+      overflow-y: auto;
+      padding: 1rem;
+      border-radius: 8px;
+      background: rgba(0, 0, 50, 0.6);
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+    .content-container {
+      backdrop-filter: blur(10px);
+      background: rgba(0, 0, 50, 0.6);
+      padding: 2rem;
+      border-radius: 15px;
+      margin: 2rem auto;
+      max-width: 1200px;
+      z-index: 1;
+      box-shadow: 0 0 20px rgba(255, 0, 255, 0.1);
+    }
+
+    h2 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      font-weight: bold;
+      text-align: center;
+      text-transform: uppercase;
+      color: #ffffff;
+    }
+    h4 {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      font-weight: bold;
+      text-align: center;
+      text-transform: uppercase;
+      color: #ffffff;
+    }
+
+    ul { list-style-type: none; }
+    ul li { margin: 0.5rem 0; font-size: 1.2rem; color: #f1f1f1; }
+    ul li strong { color: violet; }
+
+    input[type="file"] {
+      padding: 1rem;
+      border-radius: 8px;
+      background: violet;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.3s ease;
+      display: block;
+      margin: 2rem auto;
+    }
+    input[type="file"]:hover { background: #c7a1d1; }
+
+    .tab-section .content-container { animation: fadeIn 1s ease-out; }
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(50px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    .chart-container { max-width: 600px; margin: auto; }
+    canvas { background: #1e1e1e; border-radius: 10px; }
+
+    .project-link {
+      display: block;
+      padding: 12px;
+      border: 1px solid #ccc;
+      margin: 8px 0;
+      border-radius: 8px;
+      text-decoration: none;
+      color: white;
+    }
+
+    .progress-bar-container {
+      width: 100%;
+      background-color: #ccc;
+      border-radius: 8px;
+      margin-top: 6px;
+    }
+
+    .progress-bar {
+      height: 20px;
+      background-color: #4caf50;
+      border-radius: 8px;
+      text-align: center;
+      color: white;
+      font-weight: bold;
+      transition: width 0.5s ease;
+    }
+
+    .project-link:hover {
+      background: rgba(0, 51, 102, 0.1);
+    }
+
+    #qr-input {
+      margin-top: 20px;
+      padding: 10px;
+      width: 100%;
+      max-width: 400px;
+    }
+  </style>
 </head>
 <body>
-  <header class="navbar">
-    <h1 class="logo">TaxSees</h1>
+<div class="container">
+  <header>
+    <div class="logo">TaxSees</div>
     <nav>
-      <button class="tab-btn" onclick="showTab('dashboard')">Dashboard</button>
-      <button class="tab-btn" onclick="showTab('scan')">Scan QR</button>
-      <button class="tab-btn" onclick="showTab('projects')">Projects</button>
+      <ul>
+        <li><a class="active" href="#" data-tab="dashboard">Dashboard</a></li>
+        <li><a href="#" data-tab="qr-scan">Scan QR</a></li>
+        <li><a href="#" data-tab="projects">Projects</a></li>
+      </ul>
     </nav>
   </header>
 
-  <main class="main-container">
-    <!-- Dashboard Section -->
-    <section id="dashboard" class="tab-section">
-      <div class="map-panel glass">
-        <!-- Embed the SVG map from the repository -->
-        <object data="Philippines_location_map.svg" type="image/svg+xml" class="map-svg"></object>
-      </div>
-      <aside class="budget-panel glass">
-        <h2>2025 Budget</h2>
-        <p><strong>Total:</strong> ₱6.33T</p>
-        <ul>
-          <li>Education: ₱925B</li>
-          <li>Health: ₱297.6B</li>
-          <li>Social Welfare: ₱262B</li>
-          <li>Infrastructure: ₱1.4T</li>
-        </ul>
-      </aside>
-    </section>
-
-    <!-- QR Scan Section -->
-    <section id="scan" class="tab-section hidden">
-      <div class="glass">
-        <h2>Scan a QR Code</h2>
-        <p>Simulate scan:</p>
-        <button class="action-btn" onclick="loadProject()">Load Sample</button>
-        <div id="project-details" class="project-card glass"></div>
-      </div>
-    </section>
-
-    <!-- Projects Section -->
-    <section id="projects" class="tab-section hidden">
-      <div class="glass">
-        <h2>Projects by Fund</h2>
-        <div class="project-list">
-          <div class="project-card glass">
-            <h3>Farm-to-Market Road</h3>
-            <p>₱10M – 75% complete</p>
-            <progress value="75" max="100"></progress>
-          </div>
-          <div class="project-card glass">
-            <h3>Barangay Health Center</h3>
-            <p>₱5M – 100% complete</p>
-            <progress value="100" max="100"></progress>
-          </div>
+  <main>
+    <section id="dashboard" class="tab-section active">
+      <div class="background-filter"></div>
+      <div class="content-container">
+        <h2>2025 National Budget Breakdown</h2>
+        <div class="chart-container">
+          <canvas id="budgetChart"></canvas>
         </div>
+        <ul>
+          <li><strong>Total Budget:</strong> ₱6.33 Trillion</li>
+          <li><strong>Education:</strong> ₱977.6 Billion</li>
+          <li><strong>Public Works:</strong> ₱900 Billion</li>
+          <li><strong>Health:</strong> ₱297.6 Billion</li>
+          <li><strong>Social Welfare:</strong> ₱262 Billion</li>
+          <li><strong>Infrastructure:</strong> ₱1.4 Trillion</li>
+          <li><strong>Defense:</strong> ₱256.1 Billion</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="qr-scan" class="tab-section">
+      <div class="background-filter"></div>
+      <div class="content-container">
+        <h2>Scan QR Code</h2>
+        <h4>Scan QR codes to access real-time budget and project details.</h4>
+        <div id="qr-reader" style="width: 300px;"></div>
+        <input type="file" id="file-input" accept="image/*">
+        <input type="text" id="manual-url" placeholder="Enter URL manually" style="margin-top: 1rem; padding: 0.5rem; width: 100%;">
+        <button onclick="navigateToURL()" style="margin-top: 0.5rem; padding: 0.5rem 1rem;">Go</button>
+      </div>
+    </section>
+
+    <section id="projects" class="tab-section">
+      <div class="background-filter"></div>
+      <div class="content-container">
+        <h2>Project Dashboard</h2>
+        <h4>Ongoing Projects</h4>
+        <div id="project-list">Loading projects...</div>
+        <input type="text" id="qr-input" placeholder="Paste QR URL or ID here" onkeydown="if(event.key==='Enter'){navigateToQR()}">
       </div>
     </section>
   </main>
+</div>
 
-  <script>
-    function showTab(id) {
-      document.querySelectorAll('.tab-section').forEach(tab => tab.classList.add('hidden'));
-      document.getElementById(id).classList.remove('hidden');
-    }
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://unpkg.com/html5-qrcode"></script>
+<script>
+  function changeTab(tabId) {
+    document.querySelectorAll('.tab-section').forEach(section => section.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
 
-    function loadProject() {
-      document.getElementById('project-details').innerHTML = `
-        <h3>Farm-to-Market Road – Davao</h3>
-        <p><strong>Contractor:</strong> XYZ Builders</p>
-        <p><strong>Budget:</strong> ₱10M (National)</p>
-        <p><strong>Status:</strong> 75% complete</p>
-        <progress value="75" max="100"></progress>
-        <p><strong>Issues:</strong> None flagged</p>
-      `;
+    document.querySelectorAll('nav ul li a').forEach(link => {
+      link.classList.remove('active');
+      if (link.dataset.tab === tabId) {
+        link.classList.add('active');
+      }
+    });
+
+    if (tabId === 'qr-scan') initializeQRScanner();
+    if (tabId === 'projects') loadProjects();
+  }
+
+  document.querySelectorAll('nav ul li a').forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const tabId = link.getAttribute('data-tab');
+      changeTab(tabId);
+    });
+  });
+
+  new Chart(document.getElementById('budgetChart'), {
+    type: 'pie',
+    data: {
+      labels: ['Education', 'Public Works', 'Health', 'Social Welfare', 'Infrastructure', 'Defense'],
+      datasets: [{
+        data: [977.6, 900, 297.6, 262, 1400, 256.1],
+        backgroundColor: ['#FF0000', '#0000FF', '#FFFF00', '#FFA500', '#00FF00', '#800080']
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'top' },
+        title: { display: true, text: '2025 National Budget Allocation' }
+      }
     }
-  </script>
+  });
+
+  function navigateToURL() {
+    const url = document.getElementById('manual-url').value;
+    if (url) window.location.href = url;
+  }
+
+  function onScanSuccess(decodedText) {
+    window.location.href = decodedText;
+  }
+
+  function onScanError(errorMessage) {
+    console.warn(`QR Code Scan Error: ${errorMessage}`);
+  }
+
+  function initializeQRScanner() {
+    const html5QrCode = new Html5Qrcode("qr-reader");
+    html5QrCode.start(
+      { facingMode: "environment" },
+      { fps: 10, qrbox: 250 },
+      onScanSuccess,
+      onScanError
+    ).catch(err => console.error(`Scanner error: ${err}`));
+
+    document.getElementById('file-input').addEventListener('change', e => {
+      if (!e.target.files.length) return;
+      const file = e.target.files[0];
+      html5QrCode.scanFile(file, true)
+        .then(decodedText => window.location.href = decodedText)
+        .catch(err => console.error(`File scan error: ${err}`));
+    });
+  }
+
+function loadProjects() {
+  google.script.run.withSuccessHandler(function(data) {
+    const list = document.getElementById('project-list');
+    list.innerHTML = '';
+
+    if (data.projects && data.projects.length > 0) {
+      data.projects.forEach(p => {
+        const a = document.createElement('a');
+        a.className = 'project-link';
+        a.textContent = `${p.name}`;
+
+        // Add click event to open project in a new tab
+        a.addEventListener('click', function() {
+          google.script.run.withSuccessHandler(function(url) {
+            window.open(url, '_blank');  // Open in a new tab
+          }).getProjectURL(p.name);
+        });
+
+        // Progress bar
+        const progressContainer = document.createElement('div');
+        progressContainer.className = 'progress-bar-container';
+
+        const progressBar = document.createElement('div');
+        progressBar.className = 'progress-bar';
+        progressBar.style.width = (p.status * 100) + '%';
+        progressBar.textContent = Math.round(p.status * 100) + '%';
+
+        progressContainer.appendChild(progressBar);
+        a.appendChild(progressContainer);
+        list.appendChild(a);
+      });
+    } else {
+      list.innerHTML = 'No projects found.';
+    }
+  }).getData();
+}
+
+function autoRefreshProjects() {
+  setInterval(loadProjects, 3000);  // Refresh every 3 seconds
+}
+
+window.addEventListener('load', () => {
+  autoRefreshProjects();
+});
+
+  function navigateToQR() {
+    const input = document.getElementById('qr-input').value;
+    if (input.trim()) window.location.href = input;
+  }
+
+  window.addEventListener('load', () => {
+    loadProjects();
+    changeTab('dashboard');
+  });
+</script>
 </body>
 </html>
