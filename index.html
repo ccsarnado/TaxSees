@@ -297,42 +297,38 @@
     });
   }
 
-function loadProjects() {
-  google.script.run.withSuccessHandler(function(data) {
-    const list = document.getElementById('project-list');
-    list.innerHTML = '';
-
-    if (data.projects && data.projects.length > 0) {
-      data.projects.forEach(p => {
-        const a = document.createElement('a');
-        a.className = 'project-link';
-        a.textContent = `${p.name}`;
-
-        // Add click event to open project in a new tab
-        a.addEventListener('click', function() {
-          google.script.run.withSuccessHandler(function(url) {
-            window.open(url, '_blank');  // Open in a new tab
-          }).getProjectURL(p.name);
-        });
-
-        // Progress bar
-        const progressContainer = document.createElement('div');
-        progressContainer.className = 'progress-bar-container';
-
-        const progressBar = document.createElement('div');
-        progressBar.className = 'progress-bar';
-        progressBar.style.width = (p.status * 100) + '%';
-        progressBar.textContent = Math.round(p.status * 100) + '%';
-
-        progressContainer.appendChild(progressBar);
-        a.appendChild(progressContainer);
-        list.appendChild(a);
-      });
-    } else {
-      list.innerHTML = 'No projects found.';
-    }
-  }).getData();
+async function loadData() {
+  try {
+    const response = await fetch('https://script.google.com/macros/s/.../exec');
+    const data = await response.json();
+    console.log(data);  // Check the fetched data
+    displayProjects(data);
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
 }
+
+function displayProjects(projects) {
+  const projectList = document.getElementById('project-list');
+  projectList.innerHTML = '';
+
+  projects.forEach(project => {
+    const projectItem = document.createElement('div');
+    projectItem.innerHTML = `
+      <h3>${project.name}</h3>
+      <p>Status: ${project.status}</p>
+      <p>Budget: ${project.budget}</p>
+      <p>Contractor: ${project.contractor}</p>
+      <p>Description: ${project.description}</p>
+      <p>Engineer: ${project.engineer}</p>
+      <p>Start Date: ${project.startDate}</p>
+    `;
+    projectList.appendChild(projectItem);
+  });
+}
+
+window.onload = loadData;
+
 
 function autoRefreshProjects() {
   setInterval(loadProjects, 3000);  // Refresh every 3 seconds
