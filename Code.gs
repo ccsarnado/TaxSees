@@ -1,0 +1,62 @@
+function doGet(e) {
+  const page = e.parameter.page;
+  const name = e.parameter.name;
+
+  if (page === 'project' && name) {
+    const project = getProjectByName(name);
+    if (project) {
+      const template = HtmlService.createTemplateFromFile('Projects');
+      template.project = project;
+      return template.evaluate()
+        .setTitle(project.name)
+        .setSandboxMode(HtmlService.SandboxMode.IFRAME);  // Ensures new tab functionality
+    } else {
+      return HtmlService.createHtmlOutput('Project not found.');
+    }
+  }
+
+  return HtmlService.createHtmlOutputFromFile('index');
+}
+
+function getProjectByName(name) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName("Projects");
+  const values = sheet.getDataRange().getValues();
+
+  for (let i = 1; i < values.length; i++) {
+    const row = values[i];
+    if (row[0] === name) {
+      return {
+        name: row[0],
+        status: row[1],  // Status is a percentage value like '100%', '50%', etc.
+        budget: row[2],
+        contractor: row[3],
+        description: row[4],
+        image: row[5],
+        engineer: row[6],
+        startDate: row[7]
+      };
+    }
+  }
+  return null;
+}
+
+function getData() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName("Projects");
+  const values = sheet.getDataRange().getValues();
+  const projects = values.slice(1).map(row => ({
+    name: row[0],
+    status: parseFloat(row[1]) / 100  // Convert status to decimal for progress bar
+  }));
+  return { projects };
+}
+
+function getProjectURL(name) {
+  const url = ScriptApp.getService().getUrl();
+  return `${url}?page=project&name=${encodeURIComponent(name)}`;
+}
+
+function include(filename) {
+  return HtmlService.createHtmlOutputFromFile(filename).getContent();
+}
