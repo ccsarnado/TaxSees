@@ -1,8 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title><?= project.name ?></title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Details</title>
   <style>
+    /* External Stylesheet */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Open Sans', sans-serif;
@@ -60,15 +63,6 @@
       filter: brightness(0.6);
     }
 
-    #project-list {
-      min-height: 200px;
-      overflow-y: auto;
-      padding: 1rem;
-      border-radius: 8px;
-      background: rgba(0, 0, 50, 0.6);
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-      color: #fff;
-    }
     .content-container {
       backdrop-filter: blur(10px);
       background: rgba(0, 0, 50, 0.6);
@@ -97,86 +91,6 @@
       color: #ffffff;
     }
 
-    ul { list-style-type: none; }
-    ul li { margin: 0.5rem 0; font-size: 1.2rem; color: #f1f1f1; }
-    ul li strong { color: violet; }
-
-    input[type="file"] {
-      padding: 1rem;
-      border-radius: 8px;
-      background: violet;
-      border: none;
-      color: #fff;
-      cursor: pointer;
-      font-size: 1rem;
-      transition: background 0.3s ease;
-      display: block;
-      margin: 2rem auto;
-    }
-    input[type="file"]:hover { background: #c7a1d1; }
-
-    .tab-section .content-container { animation: fadeIn 1s ease-out; }
-    @keyframes fadeIn {
-      0% { opacity: 0; transform: translateY(50px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
-
-    .chart-container { max-width: 600px; margin: auto; }
-    canvas { background: #1e1e1e; border-radius: 10px; }
-
-    .project-link {
-      display: block;
-      padding: 12px;
-      border: 1px solid #ccc;
-      margin: 8px 0;
-      border-radius: 8px;
-      text-decoration: none;
-      color: white;
-    }
-
-    .progress-bar-container {
-      width: 100%;
-      background-color: #ccc;
-      border-radius: 8px;
-      margin-top: 6px;
-    }
-
-    .progress-bar {
-      height: 20px;
-      background-color: #4caf50;
-      border-radius: 8px;
-      text-align: center;
-      color: white;
-      font-weight: bold;
-      transition: width 0.5s ease;
-    }
-
-    .project-link:hover {
-      background: rgba(0, 51, 102, 0.1);
-    }
-
-    #qr-input {
-      margin-top: 20px;
-      padding: 10px;
-      width: 100%;
-      max-width: 400px;
-    }
-    h2 {
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
-      font-weight: bold;
-      text-align: center;
-      text-transform: uppercase;
-      color: #ffffff;
-    }
-    h4 {
-      font-size: 1.2rem;
-      margin-bottom: 1rem;
-      font-weight: bold;
-      text-align: center;
-      text-transform: uppercase;
-      color: #ffffff;
-    }
     a {
       font-size: .8rem;
       margin-bottom: 1rem;
@@ -185,27 +99,59 @@
       text-transform: uppercase;
       color: #ffffff;
     }
+
     p { margin: 5px 0; }
   </style>
-    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<div class="background-filter"></div>
-  <div class="project-details">
-        <div class="content-container">
-    <h2><?= project.name ?></h2>
-    <h4><strong>Status:</strong> <?= project.status ?></h4>
-    <h4><strong>Budget:</strong> <?= project.budget ?></h4>
-    <h4><strong>Contractor:</strong> <?= project.contractor ?></h4>
-    <h4><strong>Description:</strong> <?= project.description ?></h4>
-    <h4><strong>Engineer:</strong> <?= project.engineer ?></h4>
-    <h4><strong>Date Started:</strong> <?= project.startDate ?></h4>
-    <a href="#" onclick="goBack()">Back to Projects</a>
+  <div class="background-filter"></div>
+  <div class="container">
+    <header>
+      <div class="logo">Project Tracker</div>
+      <nav>
+        <ul>
+          <li><a href="index.html" class="active">Home</a></li>
+          <li><a href="projects.html">Projects</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <div class="project-details">
+      <div class="content-container" id="projectDetails">
+        <!-- Project details will be dynamically inserted here -->
+      </div>
+    </div>
   </div>
-<script>
-  function goBack() {
-    window.location.href = '<?= ScriptApp.getService().getUrl(); ?>';
-  }
-</script>
+
+  <script>
+    // Replace with your actual Google Sheets data fetching URL
+    const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRgRDBtcie-p2Y7lwZN8f-Jua-souxIOpdU0RRwX0hapUkqhbELNf6AMjoWrJjBGjrJt6mGFmLGzetb/pubhtml';
+
+    fetch(sheetUrl)
+      .then(response => response.json())
+      .then(data => {
+        const project = data.feed.entry[0]; // Adjust based on your sheet data structure
+        const projectDetailsContainer = document.getElementById('projectDetails');
+
+        const projectHtml = `
+          <h2>${project.gsx$name.$t}</h2>
+          <h4><strong>Status:</strong> ${project.gsx$status.$t}</h4>
+          <h4><strong>Budget:</strong> ${project.gsx$budget.$t}</h4>
+          <h4><strong>Contractor:</strong> ${project.gsx$contractor.$t}</h4>
+          <h4><strong>Description:</strong> ${project.gsx$description.$t}</h4>
+          <h4><strong>Engineer:</strong> ${project.gsx$engineer.$t}</h4>
+          <h4><strong>Date Started:</strong> ${project.gsx$startdate.$t}</h4>
+          <a href="projects.html" onclick="goBack()">Back to Projects</a>
+        `;
+
+        projectDetailsContainer.innerHTML = projectHtml;
+      })
+      .catch(error => console.error('Error fetching project data:', error));
+
+    function goBack() {
+      window.location.href = 'projects.html';
+    }
+  </script>
 </body>
 </html>
