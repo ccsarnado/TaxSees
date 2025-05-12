@@ -1,25 +1,30 @@
 function doGet(e) {
   const page = e.parameter.page;
   const name = e.parameter.name;
-
+  
+  // Set the response to allow CORS
+  const output = ContentService.createTextOutput();
+  output.setMimeType(ContentService.MimeType.JSON);
+  
+  // Handle 'project' page
   if (page === 'project' && name) {
     const project = getProjectByName(name);
     if (project) {
-      const template = HtmlService.createTemplateFromFile('Projects');
-      template.project = project;
-      return template.evaluate()
-        .setTitle(project.name)
-        .setSandboxMode(HtmlService.SandboxMode.IFRAME);  // Ensures new tab functionality
+      output.setContent(JSON.stringify(project));
     } else {
-      return HtmlService.createHtmlOutput('Project not found.');
+      output.setContent(JSON.stringify({ error: 'Project not found' }));
     }
+  } else {
+    // If it's not a project, return all project data
+    const projects = getData();
+    output.setContent(JSON.stringify(projects));
   }
 
-  return HtmlService.createHtmlOutputFromFile('index');
+  return output;
 }
 
 function getProjectByName(name) {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = SpreadsheetApp.openById("YOUR_SHEET_ID");
   const sheet = ss.getSheetByName("Projects");
   const values = sheet.getDataRange().getValues();
 
@@ -28,7 +33,7 @@ function getProjectByName(name) {
     if (row[0] === name) {
       return {
         name: row[0],
-        status: row[1],  // Status is a percentage value like '100%', '50%', etc.
+        status: row[1],
         budget: row[2],
         contractor: row[3],
         description: row[4],
@@ -42,7 +47,7 @@ function getProjectByName(name) {
 }
 
 function getData() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = SpreadsheetApp.openById("YOUR_SHEET_ID");
   const sheet = ss.getSheetByName("Projects");
   const values = sheet.getDataRange().getValues();
   const projects = values.slice(1).map(row => ({
@@ -50,13 +55,4 @@ function getData() {
     status: parseFloat(row[1]) / 100  // Convert status to decimal for progress bar
   }));
   return { projects };
-}
-
-function getProjectURL(name) {
-  const url = ScriptApp.getService().getUrl();
-  return `${url}?page=project&name=${encodeURIComponent(name)}`;
-}
-
-function include(filename) {
-  return HtmlService.createHtmlOutputFromFile(filename).getContent();
 }
