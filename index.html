@@ -225,7 +225,6 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://unpkg.com/html5-qrcode"></script>
 <script>
-  // Change Tab function (already included in your script)
   function changeTab(tabId) {
     document.querySelectorAll('.tab-section').forEach(section => section.classList.remove('active'));
     document.getElementById(tabId).classList.add('active');
@@ -241,36 +240,31 @@
     if (tabId === 'projects') loadProjects();
   }
 
-  async function loadData() {
-    try {
-      const response = await fetch('https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec');
-      const data = await response.json();
-      displayProjects(data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  }
-
-  function displayProjects(projects) {
-    const projectList = document.getElementById('project-list');
-    projectList.innerHTML = ''; // Clear existing content
-
-    projects.forEach(project => {
-      const projectItem = document.createElement('div');
-      projectItem.innerHTML = `
-        <h3>${project.name}</h3>
-        <p>Status: ${project.status}</p>
-        <p>Budget: ${project.budget}</p>
-        <p>Contractor: ${project.contractor}</p>
-        <p>Description: ${project.description}</p>
-        <p>Engineer: ${project.engineer}</p>
-        <p>Start Date: ${project.startDate}</p>
-      `;
-      projectList.appendChild(projectItem);
+  document.querySelectorAll('nav ul li a').forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const tabId = link.getAttribute('data-tab');
+      changeTab(tabId);
     });
-  }
+  });
 
-  window.onload = loadData;
+  new Chart(document.getElementById('budgetChart'), {
+    type: 'pie',
+    data: {
+      labels: ['Education', 'Public Works', 'Health', 'Social Welfare', 'Infrastructure', 'Defense'],
+      datasets: [{
+        data: [977.6, 900, 297.6, 262, 1400, 256.1],
+        backgroundColor: ['#FF0000', '#0000FF', '#FFFF00', '#FFA500', '#00FF00', '#800080']
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'top' },
+        title: { display: true, text: '2025 National Budget Allocation' }
+      }
+    }
+  });
 
   function navigateToURL() {
     const url = document.getElementById('manual-url').value;
@@ -293,7 +287,60 @@
       onScanSuccess,
       onScanError
     ).catch(err => console.error(`Scanner error: ${err}`));
+
+    document.getElementById('file-input').addEventListener('change', e => {
+      if (!e.target.files.length) return;
+      const file = e.target.files[0];
+      html5QrCode.scanFile(file, true)
+        .then(decodedText => window.location.href = decodedText)
+        .catch(err => console.error(`File scan error: ${err}`));
+    });
   }
+
+function loadProjects() {
+  google.script.run.withSuccessHandler(function(data) {
+    const list = document.getElementById('project-list');
+    list.innerHTML = '';
+
+    if (data.projects && data.projects.length > 0) {
+      data.projects.forEach(p => {
+        const a = document.createElement('a');
+        a.className = 'project-link';
+        a.textContent = `${p.name}`;
+
+        // Add click event to open project in a new tab
+        a.addEventListener('click', function() {
+          google.script.run.withSuccessHandler(function(url) {
+            window.open(url, '_blank');  // Open in a new tab
+          }).getProjectURL(p.name);
+        });
+
+        // Progress bar
+        const progressContainer = document.createElement('div');
+        progressContainer.className = 'progress-bar-container';
+
+        const progressBar = document.createElement('div');
+        progressBar.className = 'progress-bar';
+        progressBar.style.width = (p.status * 100) + '%';
+        progressBar.textContent = Math.round(p.status * 100) + '%';
+
+        progressContainer.appendChild(progressBar);
+        a.appendChild(progressContainer);
+        list.appendChild(a);
+      });
+    } else {
+      list.innerHTML = 'No projects found.';
+    }
+  }).getData();
+}
+
+function autoRefreshProjects() {
+  setInterval(loadProjects, 3000);  // Refresh every 3 seconds
+}
+
+window.addEventListener('load', () => {
+  autoRefreshProjects();
+});
 
   function navigateToQR() {
     const input = document.getElementById('qr-input').value;
@@ -301,7 +348,8 @@
   }
 
   window.addEventListener('load', () => {
-    changeTab('dashboard'); // Default tab
+    loadProjects();
+    changeTab('dashboard');
   });
 </script>
 </body>
