@@ -24,7 +24,7 @@ function doGet(e) {
 }
 
 function getProjectByName(name) {
-  const ss = SpreadsheetApp.openById("1qnLDAvv_p2CGIZiGxawCZPUnm8vtU7hIXUO5J-drE7M");
+  const ss = SpreadsheetApp.openById("2PACX-1vRgRDBtcie-p2Y7lwZN8f-Jua-souxIOpdU0RRwX0hapUkqhbELNf6AMjoWrJjBGjrJt6mGFmLGzetb");
   const sheet = ss.getSheetByName("Projects");
   const values = sheet.getDataRange().getValues();
 
@@ -47,7 +47,7 @@ function getProjectByName(name) {
 }
 
 function getData() {
-  const ss = SpreadsheetApp.openById("1qnLDAvv_p2CGIZiGxawCZPUnm8vtU7hIXUO5J-drE7M");
+  const ss = SpreadsheetApp.openById("2PACX-1vRgRDBtcie-p2Y7lwZN8f-Jua-souxIOpdU0RRwX0hapUkqhbELNf6AMjoWrJjBGjrJt6mGFmLGzetb");
   const sheet = ss.getSheetByName("Projects");
   const values = sheet.getDataRange().getValues();
   const projects = values.slice(1).map(row => ({
